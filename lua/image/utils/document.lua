@@ -114,8 +114,6 @@ local create_document_integration = function(config)
               math.floor(term_size.screen_cols / 2),
               0
             )
-            height = math.floor(height / 2)
-            width = math.floor(width / 2)
             local win_config = {
               relative = "cursor",
               row = 1,
@@ -123,7 +121,7 @@ local create_document_integration = function(config)
               width = width,
               height = height,
               style = "minimal",
-              border = "none",
+              border = "single",
             }
             local buf = vim.api.nvim_create_buf(false, true)
             vim.bo[buf].filetype = "image_nvim_popup"
