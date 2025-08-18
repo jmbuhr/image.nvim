@@ -102,6 +102,10 @@ local create_document_integration = function(config)
       -- render images from queue
       for _, item in ipairs(image_queue) do
         local render_image = function(image)
+          local mode = vim.api.nvim_get_mode().mode
+          if mode ~= "n" then
+            return
+          end
           if ctx.options.only_render_image_at_cursor and ctx.options.only_render_image_at_cursor_mode == "popup" then
             if popup_window ~= nil then return end
 
@@ -111,13 +115,16 @@ local create_document_integration = function(config)
               term_size,
               image.image_width,
               image.image_height,
-              math.floor(term_size.screen_cols / 2),
-              0
+              30,
+              30
             )
+            local cursor_pos = vim.api.nvim_win_get_cursor(item.window.id)
+            local cursor_row = cursor_pos[1]
+            local cursor_col = cursor_pos[2]
             local win_config = {
               relative = "cursor",
               row = 1,
-              col = 0,
+              col = 0 - cursor_col,
               width = width,
               height = height,
               style = "minimal",
@@ -138,7 +145,7 @@ local create_document_integration = function(config)
               height = height,
             })
             -- close the floating window when the cursor moves
-            vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
+            vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI", "InsertEnter" }, {
               callback = function()
                 if vim.api.nvim_win_is_valid(win) then vim.api.nvim_win_close(win, true) end
                 image:clear()
