@@ -115,8 +115,8 @@ local create_document_integration = function(config)
               term_size,
               image.image_width,
               image.image_height,
-              30,
-              30
+              35,
+              35
             )
             local cursor_pos = vim.api.nvim_win_get_cursor(item.window.id)
             local cursor_row = cursor_pos[1]
